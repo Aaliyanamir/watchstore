@@ -549,8 +549,8 @@ async function finishCalibre() {
   }
 }
 
+window.__ready = true;
 requestAnimationFrame(() => setTimeout(() => {
-  window.__ready = true;
   finishCalibre().catch(error => {
     console.error('Unable to build the AURELUX calibre:', error);
     toast('The calibre details could not load. The watch remains available.');
