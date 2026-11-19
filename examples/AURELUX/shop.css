@@ -63,14 +63,14 @@ em { font-style: italic; color: var(--bronze); font-family: 'Cormorant Garamond'
 
 .nav-static .links {
   display: flex;
-  gap: 32px;
+  gap: clamp(10px, 1.25vw, 20px);
   list-style: none;
 }
 
 .nav-static .links a {
   color: rgba(255,255,255,0.75);
   text-decoration: none;
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   transition: color 0.3s ease;
@@ -84,6 +84,12 @@ em { font-style: italic; color: var(--bronze); font-family: 'Cormorant Garamond'
 }
 
 .nav-static .mobile-appointment { display: none !important; }
+.nav-static .nav-r { display: flex; align-items: center; gap: clamp(10px, 1.2vw, 18px); }
+.nav-static .site-bag { display: inline-flex; align-items: center; gap: 7px; color: rgba(255,255,255,.75); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.nav-static .site-bag:hover, .nav-static .site-bag.active { color: var(--bronze-light); }
+.nav-static .site-bag .bag-count { display: grid; width: 20px; height: 20px; place-items: center; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; font-size: .62rem; }
+.nav-static .site-appointment { display: inline-flex; min-height: 40px; padding: 0 16px; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(255,255,255,.4); border-radius: 30px; color: #f3efe7; font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; transition: all .3s ease; }
+.nav-static .site-appointment:hover { background: var(--bronze-light); border-color: var(--bronze-light); color: var(--dark); }
 
 .nav-static .nav-toggle {
   display: none;
@@ -509,6 +515,21 @@ em { font-style: italic; color: var(--bronze); font-family: 'Cormorant Garamond'
 .modal-cta:hover { background: var(--bronze); }
 
 /* ─── RESPONSIVE ─── */
+@media (max-width: 1180px) {
+  .nav-static { position: sticky; padding: 12px 18px; flex-wrap: nowrap; gap: 12px; }
+  .nav-static .brand { min-width: 0; }
+  .nav-static .brand-name { font-size: 1.2rem; }
+  .nav-static .brand-sub { display: none; }
+  .nav-static .nav-r { margin-left: auto; }
+  .nav-static .site-appointment { display: none; }
+  .nav-static .nav-toggle { display: flex; flex: 0 0 auto; }
+  .nav-static .links { display: none; position: absolute; top: calc(100% + 8px); left: 12px; right: 12px; padding: 10px;
+    flex-direction: column; gap: 0; border: 1px solid rgba(255,255,255,.14); border-radius: 14px; background: rgba(11,11,15,.98); box-shadow: 0 18px 42px rgba(0,0,0,.32); }
+  .nav-static .links.is-open { display: flex; }
+  .nav-static .links a { padding: 14px 12px; font-size: .75rem; }
+  .nav-static .links .mobile-appointment { display: block !important; }
+}
+
 @media (max-width: 860px) {
   .nav-static { position: sticky; padding: 12px 18px; flex-wrap: nowrap; gap: 12px; }
   .nav-static .brand { min-width: 0; }

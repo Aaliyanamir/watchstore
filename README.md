@@ -78,24 +78,32 @@ stop was a composed frame. Hand a brief plus `docs/ENGINE.md` to your agent to b
 
 ### AURELUX watch store
 
-The project root opens the AURELUX storefront. Install the frontend dependencies and start Vite:
+The project root opens the complete AURELUX store: an animated 3D home experience, searchable collection, product details,
+shopping bag, cash-on-delivery checkout, and a private catalogue/order workspace. The 3D home animation is intentionally
+kept as-is. Use Node.js 20.19+ and install the locked frontend dependencies:
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-The shop and admin panel use the API, so start it in a second terminal:
+The storefront and admin workspace use the API. In a second terminal, install the backend and create its local settings:
 
 ```bash
 cd aurelux-backend
-npm install
+Copy-Item .env.example .env
+# Edit .env and set a unique password (12+ characters) and JWT secret (32+ characters).
+npm ci
 npm start
 ```
 
-The home page is at `http://127.0.0.1:5190/`; the shop is at `/examples/AURELUX/shop.html`.
-To use the admin login at `/examples/AURELUX/admin/login.html`, create `aurelux-backend/.env`
-with `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and a long random `JWT_SECRET`.
+The pages are `/` (3D home), `/examples/AURELUX/shop.html` (collection), `/examples/AURELUX/cart.html` (bag and checkout),
+and `/examples/AURELUX/admin/login.html` (admin sign-in). The admin dashboard supports adding, editing and removing
+timepieces, updating order progress, and downloading an Excel-compatible CSV order ledger.
+
+For production, set `meta[name="aurelux-api"]` on the storefront pages to the API's HTTPS origin when it is hosted
+separately, and set `FRONTEND_ORIGINS` in the backend environment to the exact storefront origin(s). Keep `.env` private; never publish
+production credentials. Orders use server-side catalogue prices and stock, and are not processed as online payments.
 
 ### Dioramas examples
 

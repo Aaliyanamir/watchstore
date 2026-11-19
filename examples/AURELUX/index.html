@@ -10,26 +10,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" href="/models/horologie/watch-fast.glb" as="fetch" crossorigin>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <canvas id="gl" aria-hidden="true"></canvas>
-
-  <div class="loader" role="status" aria-live="polite">
-    <svg class="loader-gauge" viewBox="0 0 200 200" aria-hidden="true">
-      <circle class="lg-track" cx="100" cy="100" r="86"/>
-      <circle class="lg-fill" cx="100" cy="100" r="86"/>
-      <g class="lg-ticks"></g>
-      <g class="lg-balance">
-        <circle cx="100" cy="100" r="34" fill="none" stroke="currentColor" stroke-width="2.4"/>
-        <path d="M100 66V134M70.6 83L129.4 117M70.6 117L129.4 83" stroke="currentColor" stroke-width="1.6"/>
-        <circle cx="100" cy="100" r="4" fill="currentColor"/>
-      </g>
-      <path class="lg-spring" d="M100 100m0-6a6 6 0 1 1-6 6a9 9 0 1 1 9 9a12 12 0 1 1-12-12a15 15 0 1 1 15 15a18 18 0 1 1-18-18" fill="none" stroke="currentColor" stroke-width=".8"/>
-    </svg>
-    <p class="loader-h"><span class="loader-n">0</span><small>h</small></p>
-    <p class="loader-line caps">Winding the mainspring</p>
-  </div>
 
   <header class="nav">
     <a class="brand" href="#top" aria-label="AURELUX Horologie — home">
@@ -46,7 +31,6 @@
       <a class="mobile-appointment" href="#appointment">Appointments</a>
     </nav>
     <div class="nav-r">
-      <button class="sound caps" type="button" aria-pressed="true" data-cursor="link"><i></i><span>Sound</span></button>
       <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
         <span></span><span></span><span></span>
       </button>
@@ -57,22 +41,13 @@
   <main>
     <section class="hero" id="top" aria-label="Introduction">
       <div class="hero-inner">
-        <p class="eyebrow caps">Calibre AH-01 &nbsp;·&nbsp; Skeleton tourbillon &nbsp;·&nbsp; Genève</p>
         <h1 class="hero-title"><span class="ln">Experience</span><span class="ln">True Luxury.</span><span class="ln"><em>With AURELUX.</em></span></h1>
-        <p class="hero-lede">Discover a new level of luxury with AURELUX.
-  Explore our premium watch collection in stunning 3D
-  and find the perfect watch for your style.</p>
+        <p class="hero-lede">Swiss-made timepieces, crafted for a lifetime.</p>
         <div class="hero-cta">
           <a class="btn btn-solid" href="shop.html" data-magnetic>Shop Collection</a>
           <a class="btn-text caps" href="#calibre">Explore in 3D <span aria-hidden="true">↓</span></a>
         </div>
       </div>
-      <dl class="hero-spec caps">
-        <div><dt>Design</dt><dd>Premium Luxury</dd></div>
-        <div><dt>Style</dt><dd>Modern & Elegant</dd></div>
-        <div><dt>Collection</dt><dd>AURELUX Series</dd></div>
-      </dl>
-      <p class="hint caps" aria-hidden="true"><span class="hint-dot"></span>Move to tilt the watch &nbsp;·&nbsp; scroll to open the case</p>
 
     </section>
 
@@ -207,9 +182,9 @@
       </div>
       <div class="foot-cols caps">
         <p>AURELUX Horologie SA<br>Rue des Granges 14<br>1204 Genève, Suisse</p>
-        <p><a href="#atelier">Atelier</a><br><a href="#collection">Collection</a><br><a href="#appointment">Service &amp; restoration</a></p>
-        <p><a href="#top">Journal</a><br><a href="#top">Press</a><br><a href="#top">Instagram</a></p>
-        <p>© 2026 AURELUX Horologie Sri Lankas<br>Poinçon de Genève<br>Swiss made</p>
+        <p><a href="./atelier.html">Atelier</a><br><a href="./shop.html">Collection</a><br><a href="./appointments.html">Appointments</a></p>
+        <p><a href="./craft.html">Our craft</a><br><a href="./client-care.html">Client care</a><br><a href="./delivery-returns.html">Delivery &amp; returns</a></p>
+        <p>© 2026 AURELUX Horologie · Sri Lanka<br>Poinçon de Genève<br>Swiss made</p>
       </div>
     </footer>
   </main>
@@ -236,7 +211,7 @@
   </aside>
   <div class="toast caps" role="status"></div>
 
-  <script type="module" src="./main.js"></script>
+  <script type="module" src="./navigation.js"></script>
   <script type="module" src="./main.js"></script>
 </body>
 </html>

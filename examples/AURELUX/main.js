@@ -3,7 +3,7 @@ import { DepthOfFieldEffect } from 'postprocessing';
 import { Assets, firstMesh } from '../../src/core/assets.js';
 import { Pointer } from '../../src/core/input.js';
 import { smoothScroll, gsap } from '../../src/core/scroll.js';
-import { preloader, cursor, magnetic } from '../../src/core/ui.js';
+import { magnetic } from '../../src/core/ui.js';
 import { buildMovement } from './movement.js';
 import { patch, irisUniforms } from './finish.js';
 import { makeStudio } from './studio.js';
@@ -17,13 +17,13 @@ const MOBILE = () => innerWidth / innerHeight < 0.8;
 const canvas = document.getElementById('gl');
 let dof = null;
 const engine = new Engine({
-  canvas, fov: 30, near: 0.05, far: 120, dpr: 1.25, background: 0x0b0b0f,
+  canvas, fov: 30, near: 0.05, far: 120, dpr: innerWidth < 768 ? 0.85 : 1, background: 0x0b0b0f,
   post: {
     tone: 'neutral',
-    ao: { aoRadius: 0.16, intensity: 2.1, distanceFalloff: 1.1 },
+    ao: innerWidth < 768 ? false : { aoRadius: 0.16, intensity: 2.1, distanceFalloff: 1.1 },
     bloom: { intensity: 0.55, luminanceThreshold: 1.3, luminanceSmoothing: 0.25, radius: 0.62 },
-    vignette: false, noise: 0.022, ca: 0.0005,
-    pre: cam => (Q.has('nodof') ? [] : [(dof = new DepthOfFieldEffect(cam, { focusDistance: 8, focusRange: 3, bokehScale: 0, resolutionScale: 0.5 }))]),
+    vignette: false, noise: innerWidth < 768 ? false : 0.016, ca: innerWidth < 768 ? 0 : 0.0005, smaa: innerWidth >= 768,
+    pre: cam => (innerWidth < 768 || Q.has('nodof') ? [] : [(dof = new DepthOfFieldEffect(cam, { focusDistance: 8, focusRange: 3, bokehScale: 0, resolutionScale: 0.35 }))]),
   },
 });
 const { scene, camera, renderer } = engine;
@@ -60,25 +60,12 @@ backdrop.frustumCulled = false; backdrop.renderOrder = -10;
 scene.add(backdrop);
 engine.onResize((w, h, dpr) => backdrop.material.uniforms.uRes.value.set(w * dpr, h * dpr));
 
-const shadow = new ContactShadow(renderer, scene, { width: 18, depth: 11, y: -2.75, res: 512, far: 5.2, blur: 3.4, opacity: 0.55 });
+const shadow = new ContactShadow(renderer, scene, { width: 18, depth: 11, y: -2.75, res: innerWidth < 768 ? 256 : 512, far: 5.2, blur: 3.4, opacity: 0.55 });
 shadow.hidden.push(backdrop);
 
 // ─── Loader ──────────────────────────────────────────────────────────────────
 const assets = new Assets();
-const loaderEl = document.querySelector('.loader');
-{
-  const g = loaderEl.querySelector('.lg-ticks');
-  for (let i = 0; i <= 72; i += 6) { const a = (i / 72) * Math.PI * 2 - Math.PI / 2, r0 = i % 24 ? 90 : 89, r1 = i % 24 ? 94 : 98;
-    g.insertAdjacentHTML('beforeend', `<line x1="${100 + Math.cos(a) * r0}" y1="${100 + Math.sin(a) * r0}" x2="${100 + Math.cos(a) * r1}" y2="${100 + Math.sin(a) * r1}"/>`); }
-}
 let buildP = 0;
-const loader = preloader({
-  assets, el: loaderEl, minTime: 1500,
-  onValue: v => { const p = Math.min(v * 0.75 + buildP * 0.25, 1); loaderEl.style.setProperty('--p', p); loaderEl.querySelector('.loader-n').textContent = Math.round(p * 72); },
-  exit: () => gsap.timeline()
-    .to('.loader-gauge', { scale: 1.08, duration: 0.5, ease: 'power2.out' })
-    .to(loaderEl, { clipPath: 'inset(0 0 100% 0)', duration: 1.1, ease: 'expo.inOut' }, 0.25),
-});
 
 // ─── Rig: the Meshy watch and the procedural calibre share one frame (dial centre at origin, dial → +Z) ──
 const rig = new THREE.Group();
@@ -86,7 +73,7 @@ scene.add(rig);
 const irisA = irisUniforms();
 const pointer = new Pointer({ lambda: 5 });
 
-const watchLoad = assets.gltf('models/horologie/watch.glb');
+const watchLoad = assets.gltf('models/horologie/watch-fast.glb');
 const mvBuild = buildMovement({ u: irisA, yieldFn: () => new Promise(r => { buildP = Math.min(buildP + 0.1, 1); setTimeout(r, 0); }) });
 
 function prepWatch(src) {
@@ -292,10 +279,10 @@ const soundBtn = document.querySelector('.sound');
 }
 let toastT;
 function toast(msg, ms = 2600) { toastEl.textContent = msg; toastEl.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), ms); }
-soundBtn.addEventListener('click', () => { soundBtn.setAttribute('aria-pressed', soundBtn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); try { ac ??= new AudioContext(); ac.resume?.(); } catch { /* no audio */ } });
+if (soundBtn) soundBtn.addEventListener('click', () => { soundBtn.setAttribute('aria-pressed', soundBtn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); try { ac ??= new AudioContext(); ac.resume?.(); } catch { /* no audio */ } });
 let ac = null;
 function tick(kind = 'click') {
-  if (soundBtn.getAttribute('aria-pressed') !== 'true') return;
+  if (!soundBtn || soundBtn.getAttribute('aria-pressed') !== 'true') return;
   try {
     ac ??= new AudioContext();
     const t = ac.currentTime, len = kind === 'full' ? 0.25 : kind === 'beat' ? 0.06 : 0.03;
@@ -500,11 +487,6 @@ function drawLabels() {
 }
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
-cursorApi = cursor({
-  color: '#E8C6A7',
-  blend: 'normal',
-  size: 30
-});
 magnetic();
 smoothScroll({ lerp: 0.08 });
 measure();
@@ -542,13 +524,11 @@ renderer.compile(scene, camera);
 engine.render(0); shadow.update();
 mv.setExplode(0);
 engine.start();
-await loader.finish();
 started = true;
 window.__dbg = () => { const r = {}; for (const k of ['train', 'barrel', 'tourbillon']) { const v = mv.anchors[k].getWorldPosition(new THREE.Vector3()); const p = v.clone().project(camera); r[k] = [v.x.toFixed(2), v.y.toFixed(2), v.z.toFixed(2), p.x.toFixed(2), p.y.toFixed(2)]; } r.look = ST.look.toArray().map(x => x.toFixed(2)); r.cam = camera.position.toArray().map(x => x.toFixed(2)); r.S = S; r.gap = { ...GAP }; r.trainZ = mv.layers.train.g.position.z; return JSON.stringify(r); };
 window.__crownXY = () => { const v = mv.crownHit.getWorldPosition(new THREE.Vector3()).project(camera); return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight]; };
 window.__ready = true;
 if (!Q.has('kf') && scrollY < 10) {
-  gsap.fromTo(intro, { spin: -1.1, sweep: -1.6 }, { spin: 0, sweep: 0, duration: 2.6, ease: 'expo.out' });
-  gsap.from('.hero-title .ln', { yPercent: 60, opacity: 0, duration: 1.8, ease: 'expo.out', stagger: 0.1, delay: 0.1 });
-  gsap.from('.eyebrow, .hero-lede, .hero-cta, .hero-spec, .hint, .nav', { opacity: 0, y: 16, duration: 1.4, ease: 'power3.out', stagger: 0.07, delay: 0.5 });
+  intro.spin = 0;
+  intro.sweep = 0;
 }

@@ -3,7 +3,7 @@
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { dedup, weld, simplify, meshopt, textureCompress, prune, reorder, quantize } from '@gltf-transform/functions';
-import { MeshoptSimplifier, MeshoptEncoder } from 'meshoptimizer';
+import { MeshoptSimplifier, MeshoptEncoder, MeshoptDecoder } from 'meshoptimizer';
 import sharp from 'sharp';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,7 +16,10 @@ const q = +opt('q', 88);
 
 await MeshoptSimplifier.ready;
 await MeshoptEncoder.ready;
-const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.encoder': MeshoptEncoder });
+const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({
+  'meshopt.encoder': MeshoptEncoder,
+  'meshopt.decoder': MeshoptDecoder,
+});
 const doc = await io.read(input);
 const ops = [dedup(), weld()];
 if (ratio < 1) ops.push(simplify({ simplifier: MeshoptSimplifier, ratio, error: 0.0008, lockBorder: false }));

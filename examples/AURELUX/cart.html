@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="aurelux-api" content="">
+  <title>Your Bag | AURELUX Horologie</title>
+  <meta name="description" content="Review your AURELUX timepieces and place a cash-on-delivery order.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./shop.css">
+</head>
+<body class="cart-page">
+  <header class="nav-static">
+    <a class="brand" href="./index.html#top" aria-label="AURELUX Horologie home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11.5" fill="none" stroke="currentColor" stroke-width="1"/><path d="M16 4.5v23M6 10.2l20 11.6M6 21.8l20-11.6" stroke="currentColor" stroke-width=".7"/><circle cx="16" cy="16" r="2.2" fill="currentColor"/></svg>
+      <span class="brand-name">AURELUX</span><span class="brand-sub caps">Horologie · Genève</span>
+    </a>
+    <nav class="links" id="primary-navigation" aria-label="Primary">
+      <a href="./calibre.html">The calibre</a>
+      <a href="./craft.html">Our craft</a>
+      <a href="./atelier.html">The atelier</a>
+      <a href="./shop.html">Collection</a>
+    </nav>
+    <div class="nav-r">
+      <a class="bag-link" data-cart-link href="./cart.html" aria-label="Shopping bag">Bag <span class="bag-count" data-cart-count>0</span></a>
+      <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="cart-hero">
+      <div class="cart-hero-media" aria-hidden="true"><img src="/img/aurelux/wristwatch.webp" alt=""></div>
+      <p class="eyebrow caps">Your selection</p>
+      <h1>The pieces you <em>have chosen.</em></h1>
+      <p>A considered selection, reviewed personally by our atelier before delivery.</p>
+    </section>
+
+    <section class="cart-layout">
+      <div class="cart-selection">
+        <div class="section-kicker"><span>Your bag</span><span class="cart-items-count" id="cartItemsCount"></span></div>
+        <div class="cart-items" id="cartItems"><p class="cart-loading">Opening your selection…</p></div>
+      </div>
+
+      <aside class="checkout-panel" aria-label="Order details">
+        <div class="section-kicker"><span>Delivery</span><span>Cash on delivery</span></div>
+        <form id="checkoutForm">
+          <label for="customerName">Full name</label>
+          <input id="customerName" name="customerName" autocomplete="name" required minlength="2" maxlength="80">
+          <label for="phone">Phone number</label>
+          <input id="phone" name="phone" autocomplete="tel" inputmode="tel" required minlength="7" maxlength="25">
+          <label for="address">Delivery address</label>
+          <textarea id="address" name="address" autocomplete="street-address" required minlength="10" maxlength="300" rows="4"></textarea>
+          <div class="checkout-summary">
+            <div><span>Subtotal</span><strong id="cartSubtotal">Rs. 0</strong></div>
+            <div><span>Delivery</span><strong>At confirmation</strong></div>
+          </div>
+          <button class="button button-dark checkout-submit" id="submitOrder" type="submit" disabled>
+            Place your order <span aria-hidden="true">→</span>
+          </button>
+          <p class="order-message" id="orderMessage" role="status"></p>
+          <p class="checkout-note">No payment is taken now. Our atelier will call to confirm availability and delivery.</p>
+        </form>
+      </aside>
+    </section>
+
+    <section class="order-confirmation" id="orderConfirmation" hidden>
+      <span class="atelier-seal" aria-hidden="true">A</span>
+      <p class="eyebrow caps">Order received</p>
+      <h2>Thank you. <em>Your selection is in good hands.</em></h2>
+      <p id="confirmationDetails"></p>
+      <a class="button button-outline" href="./shop.html">Continue discovering</a>
+    </section>
+  </main>
+
+  <footer class="store-footer">
+    <p class="footer-wordmark">AURELUX</p>
+    <p>Made by hand in Genève, since 2009.</p>
+    <div><a href="./atelier.html">The atelier</a><a href="./shop.html">Collection</a><a href="./appointments.html">Appointments</a><a href="./client-care.html">Client care</a><a href="./delivery-returns.html">Delivery &amp; returns</a></div>
+    <small>© 2026 AURELUX Horologie · Sri Lanka · Swiss made</small>
+  </footer>
+
+  <script type="module" src="./navigation.js"></script>
+  <script type="module" src="./cart-page.js"></script>
+</body>
+</html>

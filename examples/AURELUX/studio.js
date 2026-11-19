@@ -79,7 +79,7 @@ export function makeStudio(renderer, scene, opts = {}) {
   const key = new THREE.DirectionalLight(0xfff3e6, 2.4);
   key.position.set(-3.5, 6, 5);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(innerWidth < 768 ? 1024 : 2048, innerWidth < 768 ? 1024 : 2048);
   Object.assign(key.shadow.camera, { left: -3.6, right: 3.6, top: 3.6, bottom: -3.6, near: 0.5, far: 24 });
   key.shadow.bias = -0.0002; key.shadow.normalBias = 0.004; key.shadow.radius = 2;
   scene.add(key, key.target);

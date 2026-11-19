@@ -116,6 +116,10 @@ export class Engine {
   start() {
     if (this.running) return;
     this.running = true;
+    const mobile = matchMedia('(max-width: 768px)').matches;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const frameInterval = mobile || reducedMotion ? 1000 / 30 : 0;
+    let lastRender = 0;
     const loop = () => {
       if (!this.running) return;
       requestAnimationFrame(loop);
@@ -124,6 +128,8 @@ export class Engine {
       this.time += dt;
       for (const f of this.ticks) f(dt, this.time);
       if (this.paused) return;
+      if (frameInterval && performance.now() - lastRender < frameInterval) return;
+      lastRender = performance.now();
       this.render(dt);
       for (const f of this.afters) f(dt, this.time);
       this._frames++;
