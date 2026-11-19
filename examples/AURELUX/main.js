@@ -17,7 +17,7 @@ const MOBILE = () => innerWidth / innerHeight < 0.8;
 const canvas = document.getElementById('gl');
 let dof = null;
 const engine = new Engine({
-  canvas, fov: 30, near: 0.05, far: 120, dpr: innerWidth < 768 ? 0.85 : 1, background: 0x0b0b0f,
+  canvas, fov: 30, near: 0.05, far: 120, dpr: innerWidth < 768 ? 0.85 : 1, background: 0x050505,
   post: {
     tone: 'neutral',
     ao: innerWidth < 768 ? false : { aoRadius: 0.16, intensity: 2.1, distanceFalloff: 1.1 },
@@ -27,12 +27,12 @@ const engine = new Engine({
   },
 });
 const { scene, camera, renderer } = engine;
-const AURELUX_BG = new THREE.Color(0x0b0b0f);
+const AURELUX_BG = new THREE.Color(0x050505);
 
 renderer.setClearColor(AURELUX_BG, 1);
 const studio = makeStudio(renderer, scene, { front: 2.1, dome: 1.4 });
 
-// Ivory cyclorama: a full-screen HDR gradient drawn behind everything (lands on #f3efe7 after neutral tone mapping).
+// Near-black studio backdrop with a restrained warm highlight.
 const backdrop = new THREE.Mesh(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1, 3, 0], 3)),
   new THREE.ShaderMaterial({
     depthWrite: false, depthTest: false,
@@ -46,14 +46,8 @@ const backdrop = new THREE.Mesh(new THREE.BufferGeometry().setAttribute('positio
       void main(){ vec2 uv = gl_FragCoord.xy / uRes; vec2 d = (uv - uFocus) * vec2(uRes.x / uRes.y, 1.0);
         float r = length(d);
 
-vec3 c = uC * mix(
-  1.8,
-  0.65,
-  smoothstep(0.0, 1.3, r)
-);
-
-c += vec3(0.018, 0.009, 0.012)
-   * (1.0 - smoothstep(0.0, 1.1, r));
+vec3 c = uC * mix(1.35, 0.75, smoothstep(0.0, 1.3, r));
+c += vec3(0.012, 0.009, 0.005) * (1.0 - smoothstep(0.0, 1.1, r));
         gl_FragColor = vec4(c, 1.0); }`,
   }));
 backdrop.frustumCulled = false; backdrop.renderOrder = -10;
@@ -74,7 +68,7 @@ const irisA = irisUniforms();
 const pointer = new Pointer({ lambda: 5 });
 
 const watchLoad = assets.gltf('models/horologie/watch-fast.glb');
-const mvBuild = buildMovement({ u: irisA, yieldFn: () => new Promise(r => { buildP = Math.min(buildP + 0.1, 1); setTimeout(r, 0); }) });
+const buildCalibre = () => buildMovement({ u: irisA, yieldFn: () => new Promise(r => { buildP = Math.min(buildP + 0.1, 1); setTimeout(r, 0); }) });
 
 function prepWatch(src) {
   src.updateMatrixWorld(true);
@@ -333,7 +327,24 @@ const tiltQ = new THREE.Quaternion(), footEl = document.querySelector('.foot'), 
 const irisCenter = new THREE.Vector3();
 
 engine.onTick((dt, t) => {
-  if (!mv) return;
+  if (!mv) {
+    if (!watch) return;
+    pointer.update(dt);
+    if (!Q.has('kf')) S = damp(S, scrollS(), 7, dt);
+    const st = evalState(S);
+    rig.position.copy(st.rigP);
+    rig.position.y += Math.sin(t * 0.7) * 0.035 * st.tilt;
+    tiltQ.setFromEuler(tmpE.set(-pointer.sy * 0.16 * st.tilt, pointer.sx * 0.3 * st.tilt + intro.spin, 0));
+    rig.quaternion.copy(tiltQ).multiply(st.rigQ);
+    camera.position.copy(st.cam);
+    camera.lookAt(st.look);
+    watch.holder.visible = true;
+    heroEl.style.opacity = 1 - smooth(0.7, 0.95, S);
+    heroEl.style.transform = `translate3d(0, ${-smooth(0, 0.6, S) * 40}px, 0)`;
+    shadow.setCenter(rig.position.x * 0.8, 0);
+    if (!engine.paused && (Math.round(t * 60) % 2 === 0)) shadow.update();
+    return;
+  }
   pointer.update(dt);
   if (!Q.has('kf')) S = damp(S, scrollS(), 7, dt);
   const st = evalState(S);
@@ -493,41 +504,61 @@ measure();
 addEventListener('resize', measure);
 new ResizeObserver(measure).observe(document.body);
 
-const [gltf, calibre] = await Promise.all([watchLoad, mvBuild]);
-mv = calibre;
-rig.add(mv.root);
+const gltf = await watchLoad;
 watch = prepWatch(gltf.scene);
 rig.add(watch.holder);
 prepModel(watch.holder, renderer, { cast: false, receive: true, env: 1.25, onMat: m => patch(m, { iris: 2, u: irisA }) });
-// Collection variants share the Meshy geometry with recoloured, independently dissolving materials.
-for (const c of COLL) {
-  const src = gltf.scene.clone(true);
-  const u = irisUniforms();
-  u.uIris.value = 1;
-  src.traverse(o => {
-    if (!o.isMesh) return;
-    o.material = o.material.clone();
-    patch(o.material, { iris: 2, u, recolor: true, params: { uCaseTint: { value: new THREE.Color(...c.tint) }, uStrapTint: { value: new THREE.Color(...c.strap) },
-      uDialC: { value: watch.dialC.clone() }, uCaseR: { value: watch.caseR }, uDLC: { value: c.dlc } } });
-    o.castShadow = false; o.receiveShadow = true;
-  });
-  const holder = new THREE.Group(); holder.add(src); scene.add(holder);
-  clones.push({ ...c, holder, u });
-}
-mv.root.traverse(o => { if (o.isMesh && o.material?.isMeshPhysicalMaterial && o.material.transmission > 0) o.castShadow = false; });
-
-// Compile every program in every state before the first frame.
 evalState(S);
-irisA.uIris.value = 0.5; for (const c of clones) { c.holder.visible = true; c.u.uIris.value = 0.5; }
-mv.setExplode(1);
-renderer.compile(scene, camera);
-engine.render(0); shadow.update();
-mv.setExplode(0);
+rig.position.copy(ST.rigP);
+rig.quaternion.copy(ST.rigQ);
+camera.position.copy(ST.cam);
+camera.lookAt(ST.look);
 engine.start();
 started = true;
-window.__dbg = () => { const r = {}; for (const k of ['train', 'barrel', 'tourbillon']) { const v = mv.anchors[k].getWorldPosition(new THREE.Vector3()); const p = v.clone().project(camera); r[k] = [v.x.toFixed(2), v.y.toFixed(2), v.z.toFixed(2), p.x.toFixed(2), p.y.toFixed(2)]; } r.look = ST.look.toArray().map(x => x.toFixed(2)); r.cam = camera.position.toArray().map(x => x.toFixed(2)); r.S = S; r.gap = { ...GAP }; r.trainZ = mv.layers.train.g.position.z; return JSON.stringify(r); };
-window.__crownXY = () => { const v = mv.crownHit.getWorldPosition(new THREE.Vector3()).project(camera); return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight]; };
-window.__ready = true;
+
+async function finishCalibre() {
+  mv = await buildCalibre();
+  rig.add(mv.root);
+  // Collection variants share the Meshy geometry with recoloured, independently dissolving materials.
+  for (const c of COLL) {
+    const src = gltf.scene.clone(true);
+    const u = irisUniforms();
+    u.uIris.value = 1;
+    src.traverse(o => {
+      if (!o.isMesh) return;
+      o.material = o.material.clone();
+      patch(o.material, { iris: 2, u, recolor: true, params: { uCaseTint: { value: new THREE.Color(...c.tint) }, uStrapTint: { value: new THREE.Color(...c.strap) },
+        uDialC: { value: watch.dialC.clone() }, uCaseR: { value: watch.caseR }, uDLC: { value: c.dlc } } });
+      o.castShadow = false; o.receiveShadow = true;
+    });
+    const holder = new THREE.Group(); holder.add(src); scene.add(holder);
+    clones.push({ ...c, holder, u });
+  }
+  mv.root.traverse(o => { if (o.isMesh && o.material?.isMeshPhysicalMaterial && o.material.transmission > 0) o.castShadow = false; });
+  mv.setExplode(0);
+  window.__calibreReady = true;
+  if (typeof renderer.compileAsync === 'function') {
+    const rootVisible = mv.root.visible;
+    const cloneVisibility = clones.map(c => c.holder.visible);
+    mv.root.visible = true;
+    for (const c of clones) c.holder.visible = true;
+    const warmup = renderer.compileAsync(scene, camera);
+    mv.root.visible = rootVisible;
+    clones.forEach((c, i) => { c.holder.visible = cloneVisibility[i]; });
+    warmup.catch(error => console.error('Unable to warm watch shaders:', error));
+  }
+}
+
+requestAnimationFrame(() => setTimeout(() => {
+  window.__ready = true;
+  finishCalibre().catch(error => {
+    console.error('Unable to build the AURELUX calibre:', error);
+    toast('The calibre details could not load. The watch remains available.');
+  });
+}, 0));
+
+window.__dbg = () => { if (!mv) return null; const r = {}; for (const k of ['train', 'barrel', 'tourbillon']) { const v = mv.anchors[k].getWorldPosition(new THREE.Vector3()); const p = v.clone().project(camera); r[k] = [v.x.toFixed(2), v.y.toFixed(2), v.z.toFixed(2), p.x.toFixed(2), p.y.toFixed(2)]; } r.look = ST.look.toArray().map(x => x.toFixed(2)); r.cam = camera.position.toArray().map(x => x.toFixed(2)); r.S = S; r.gap = { ...GAP }; r.trainZ = mv.layers.train.g.position.z; return JSON.stringify(r); };
+window.__crownXY = () => { if (!mv) return null; const v = mv.crownHit.getWorldPosition(new THREE.Vector3()).project(camera); return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight]; };
 if (!Q.has('kf') && scrollY < 10) {
   intro.spin = 0;
   intro.sweep = 0;

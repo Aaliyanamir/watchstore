@@ -1,5 +1,5 @@
-import { apiFetch, escapeHtml, formatPrice, imageUrl } from './api.js';
-import { clearCart, getCart, removeFromCart, setCartQuantity, watchCartButton } from './cart.js';
+import { apiFetch, displayWatchName, escapeHtml, formatPrice, imageUrl } from './api.js';
+import { clearCart, getCart, removeFromCart, setCartQuantity } from './cart.js';
 
 const itemsEl = document.getElementById('cartItems');
 const countEl = document.getElementById('cartItemsCount');
@@ -11,8 +11,6 @@ const confirmation = document.getElementById('orderConfirmation');
 const cartLayout = document.querySelector('.cart-layout');
 let catalog = [];
 let busy = false;
-
-watchCartButton();
 
 function cartLines() {
   const byId = new Map(catalog.map(watch => [String(watch.id), watch]));
@@ -40,10 +38,10 @@ function renderCart() {
     const stock = Number(watch.stock) || 0;
     return `
       <article class="cart-item">
-        <div class="cart-item-image">${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(watch.name)}">` : '<span class="image-monogram" aria-hidden="true">A</span>'}</div>
+        <div class="cart-item-image">${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(displayWatchName(watch))}">` : '<span class="image-monogram" aria-hidden="true">A</span>'}</div>
         <div class="cart-item-details">
           <p class="product-category">${escapeHtml(watch.category || 'AURELUX')}</p>
-          <h2>${escapeHtml(watch.name)}</h2>
+          <h2>${escapeHtml(displayWatchName(watch))}</h2>
           <p class="cart-unit-price">${formatPrice(watch.price)}</p>
           ${stock < quantity ? `<p class="stock-warning">Only ${stock} available. Adjust the quantity to continue.</p>` : ''}
           <div class="cart-item-controls">

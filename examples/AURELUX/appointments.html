@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Arrange a personal AURELUX atelier visit or ask a question about the AH-01 and the collection.">
-  <meta name="theme-color" content="#050505">
+  <meta name="theme-color" content="#f3efe7">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <title>Appointments | AURELUX</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,6 +38,29 @@
           <article class="editorial-card"><span class="editorial-card-index">03 · YOUR QUESTIONS</span><h3>Ask us anything</h3><p>From the movement to ordering and care, send your questions in advance or bring them to the conversation.</p></article>
         </div>
       </section>
+      <section class="editorial-section" aria-labelledby="concierge-heading">
+        <div class="editorial-section-heading"><h2 id="concierge-heading">A conversation, <em>made personal.</em></h2><p>Share what you are looking for and the atelier will be ready to make the conversation useful.</p></div>
+        <form class="concierge-form" id="conciergeForm">
+          <div class="concierge-fields">
+            <label for="conciergeName">Your name<input id="conciergeName" name="name" autocomplete="name" required minlength="2" maxlength="80"></label>
+            <label for="conciergePhone">Mobile number<input id="conciergePhone" name="phone" type="tel" autocomplete="tel" required minlength="7" maxlength="25"></label>
+            <label for="conciergeInterest">How can we help?
+              <select id="conciergeInterest" name="interest">
+                <option>Arrange an atelier visit</option>
+                <option>Ask about a timepiece</option>
+                <option>Discuss care or servicing</option>
+                <option>Something else</option>
+              </select>
+            </label>
+            <label for="conciergeDate">Preferred visit date <span>(optional)</span><input id="conciergeDate" name="date" type="date"></label>
+            <label class="concierge-message" for="conciergeMessage">A note for the atelier<textarea id="conciergeMessage" name="message" rows="4" maxlength="1200" placeholder="Tell us what you would like to explore."></textarea></label>
+          </div>
+          <button class="editorial-button" type="submit">Continue in WhatsApp <span aria-hidden="true">↗</span></button>
+          <p class="concierge-note">WhatsApp will open with your message ready to review. It is not sent until you choose to send it there.</p>
+          <p class="concierge-status" id="conciergeStatus" role="status" aria-live="polite"></p>
+          <a class="concierge-fallback" id="conciergeFallback" href="#" target="_blank" rel="noopener noreferrer" hidden>Open your prepared message in WhatsApp</a>
+        </form>
+      </section>
       <section class="editorial-section" aria-labelledby="appointment-faq">
         <div class="editorial-section-heading"><h2 id="appointment-faq">Before you <em>get in touch.</em></h2><p>A few details to make planning straightforward.</p></div>
         <div class="editorial-faq">
@@ -50,5 +74,6 @@
   </main>
   <footer class="foot"><div class="foot-top"><p class="foot-word">AURELUX</p><p class="foot-line">A personal welcome, <em>in Genève.</em></p></div><div class="foot-cols caps"><p>AURELUX Horologie SA<br>Rue des Granges 14<br>1204 Genève, Suisse</p><p><a href="./atelier.html">Our atelier</a><br><a href="./shop.html">Collection</a><br><a href="./cart.html">Your bag</a></p><p><a href="./calibre.html">The AH-01</a><br><a href="./craft.html">Our craft</a><br><a href="./client-care.html">Client care</a></p><p>© 2026 AURELUX Horologie<br>Appointments<br>Swiss made</p></div></footer>
   <script type="module" src="./navigation.js"></script>
+  <script type="module" src="./appointments.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
   <title>Shop | AURELUX — The Art of Time</title>
   <meta name="description" content="Browse the full AURELUX watch collection. Luxury watches crafted with precision.">
   <meta name="theme-color" content="#f3efe7">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2213%22 fill=%22%23f3efe7%22 stroke=%22%239a6a41%22 stroke-width=%222%22/%3E%3Cpath d=%22M16 5v22M6.5 10.5l19 11M6.5 21.5l19-11%22 stroke=%22%2316213d%22 stroke-width=%221.4%22/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
@@ -41,9 +41,12 @@
 
     <!-- ─── HERO BANNER ─── -->
     <section class="shop-hero">
-      <p class="eyebrow caps">Full Collection · AURELUX Horologie</p>
-      <h1 class="shop-hero-title">Every piece, <em>in detail.</em></h1>
-      <p class="shop-hero-lede">Browse our complete range of handcrafted timepieces — each one built to the same exacting standard as the calibre you just explored.</p>
+      <div class="shop-hero-media" aria-hidden="true"><img src="/img/aurelux/collection.webp" alt=""></div>
+      <div class="shop-hero-content">
+        <p class="eyebrow caps">The AURELUX collection</p>
+        <h1 class="shop-hero-title">Find a piece <em>to make your own.</em></h1>
+        <p class="shop-hero-lede">Explore the collection, examine each detail and speak with our atelier whenever you need a closer look.</p>
+      </div>
     </section>
 
     <!-- ─── FILTER BAR ─── -->
@@ -59,10 +62,16 @@
       </div>
     </section>
 
+    <div class="shop-catalogue-note">
+      <p class="shop-reference-note">Some photographs are illustrative style references, not AURELUX products or offers for sale. <a href="https://unsplash.com/license" target="_blank" rel="noopener noreferrer">Photo license</a></p>
+      <p class="shop-catalogue-status" id="catalogueStatus" role="status" aria-live="polite"></p>
+      <button class="filter-chip shop-retry" id="retryCatalogue" type="button" hidden>Retry live availability</button>
+    </div>
+
     <!-- ─── PRODUCT GRID ─── -->
     <section class="shop-grid-section">
       <div class="shop-grid" id="shopGrid">
-        <p class="shop-loading caps">Loading watches…</p>
+        <p class="shop-loading caps" role="status">Loading watches…</p>
       </div>
     </section>
 
@@ -81,15 +90,6 @@
       <p>© 2026 AURELUX Horologie · Sri Lanka<br>Poinçon de Genève<br>Swiss made</p>
     </div>
   </footer>
-
-  <!-- ─── WATCH DETAIL MODAL ─── -->
-  <div class="watch-modal" id="watchModal" aria-hidden="true">
-    <div class="watch-modal-overlay" id="modalOverlay"></div>
-    <div class="watch-modal-content">
-      <button class="watch-modal-close" id="modalClose" aria-label="Close">&times;</button>
-      <div class="watch-modal-body" id="modalBody"></div>
-    </div>
-  </div>
 
   <script type="module" src="./navigation.js"></script>
   <script type="module" src="./shop.js"></script>

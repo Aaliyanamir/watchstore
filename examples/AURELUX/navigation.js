@@ -15,8 +15,44 @@ const navigation = header?.querySelector('#primary-navigation');
 const brand = header?.querySelector('.brand');
 const navRight = header?.querySelector('.nav-r');
 
+const footer = document.querySelector('footer.foot, footer.store-footer');
+if (footer) {
+  footer.className = 'foot site-footer';
+  footer.innerHTML = `
+    <div class="site-footer-main">
+      <div class="site-footer-intro">
+        <a class="site-footer-brand" href="./index.html#top" aria-label="AURELUX home">AURELUX</a>
+        <p>Considered timepieces. Attentive service.</p>
+        <a class="site-footer-appointment" href="./appointments.html">Speak with our atelier <span aria-hidden="true">↗</span></a>
+      </div>
+      <nav class="site-footer-column" aria-label="Discover">
+        <h2>Discover</h2>
+        <a href="./shop.html">Collection</a>
+        <a href="./calibre.html">The AH-01</a>
+        <a href="./craft.html">Our craft</a>
+      </nav>
+      <nav class="site-footer-column" aria-label="Client care">
+        <h2>Client care</h2>
+        <a href="./client-care.html">Care and service</a>
+        <a href="./delivery-returns.html">Delivery &amp; returns</a>
+        <a href="./cart.html">Your bag</a>
+      </nav>
+      <div class="site-footer-column">
+        <h2>Visit</h2>
+        <p>Rue des Granges 14<br>1204 Genève, Suisse</p>
+        <a href="./appointments.html">Appointments</a>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>© ${new Date().getFullYear()} AURELUX Horologie</span>
+      <span>Questions? Our atelier is here to help.</span>
+      <a href="#">Back to top ↑</a>
+    </div>`;
+}
+
 if (header && navigation && brand && navRight) {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const activePage = currentPage === 'watch.html' ? 'shop.html' : currentPage;
 
   brand.href = './index.html#top';
   navigation.replaceChildren(...links.map(([label, href, page, className]) => {
@@ -24,7 +60,7 @@ if (header && navigation && brand && navRight) {
     link.href = href;
     link.textContent = label;
     if (className) link.classList.add(className);
-    if (currentPage === page) {
+    if (activePage === page) {
       link.classList.add('active');
       link.setAttribute('aria-current', 'page');
     }

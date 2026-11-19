@@ -13,6 +13,7 @@ export default defineConfig({
         root: 'index.html',
         main: 'examples/AURELUX/index.html',
         shop: 'examples/AURELUX/shop.html',
+        watch: 'examples/AURELUX/watch.html',
         cart: 'examples/AURELUX/cart.html',
         calibre: 'examples/AURELUX/calibre.html',
         craft: 'examples/AURELUX/craft.html',
