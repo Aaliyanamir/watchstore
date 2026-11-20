@@ -541,3 +541,52 @@ em { font-style: italic; color: var(--bronze); font-family: 'Cormorant Garamond'
   .site-footer-column { font-size: .68rem; }
   .site-footer-bottom { flex-direction: column; gap: 8px; }
 }
+
+.shop-card {
+  position: relative;
+  border-color: rgba(22, 33, 61, .1);
+  border-radius: 8px;
+  background: linear-gradient(155deg, #fffefa, #f9f6f0);
+  box-shadow: 0 12px 34px -28px rgba(22, 33, 61, .4);
+}
+
+.shop-card::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(154, 106, 65, .65), transparent);
+  content: '';
+  pointer-events: none;
+}
+
+.shop-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(154, 106, 65, .28);
+  box-shadow: 0 24px 48px -26px rgba(22, 33, 61, .32);
+}
+
+.shop-card-img {
+  background: linear-gradient(145deg, #eee8df, #f7f3ed);
+}
+
+.shop-card-body {
+  padding: 24px;
+}
+
+.shop-card-footer {
+  border-color: rgba(22, 33, 61, .12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shop-card,
+  .shop-card-img img {
+    transition: none;
+  }
+
+  .shop-card:hover,
+  .shop-card:hover .shop-card-img img {
+    transform: none;
+  }
+}

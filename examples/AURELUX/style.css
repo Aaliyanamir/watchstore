@@ -323,7 +323,7 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
 .refs-head,
 .cta-inner {
 
-  background: rgba(13, 13, 18, 0.88) !important;
+  background: rgba(13, 13, 18, 0.88);
 
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -541,4 +541,111 @@ h2 { font: 300 clamp(38px, 3.9vw, 66px)/.98 var(--serif); letter-spacing: -.022e
 
 .shop-card-stock.out {
   color: #b24444;
+}
+
+/* Refined details for the home-page information panels */
+.step,
+.fin,
+.fin-head,
+.at,
+.col-head,
+.refs,
+.refs-head,
+.cta-inner {
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(232, 198, 167, .27);
+  border-radius: 18px;
+  background: linear-gradient(90deg, transparent, rgba(232, 198, 167, .65), transparent) top / 100% 1px no-repeat, linear-gradient(145deg, rgba(25, 24, 29, .96), rgba(9, 9, 13, .92));
+  box-shadow: 0 28px 72px -36px rgba(0, 0, 0, .88), inset 0 1px 0 rgba(255, 255, 255, .045);
+}
+
+.step h2,
+.fin h3,
+.at h2,
+.col-head h2,
+.refs-head h2,
+.cta-inner h2 {
+  text-wrap: pretty;
+}
+
+.spec {
+  gap: 0;
+  border-top: 0;
+}
+
+.spec li {
+  flex: 1;
+  padding: 3px 14px 0;
+  border-left: 1px solid rgba(232, 198, 167, .18);
+}
+
+.spec li:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.ref {
+  padding: 20px 16px 18px;
+  border: 1px solid rgba(232, 198, 167, .16);
+  border-radius: 12px;
+  background: linear-gradient(150deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .01));
+  transition: border-color .25s ease, background .25s ease, transform .25s ease;
+}
+
+.ref:hover {
+  transform: translateY(-3px);
+  border-color: rgba(232, 198, 167, .42);
+  background: linear-gradient(150deg, rgba(232, 198, 167, .1), rgba(255, 255, 255, .02));
+}
+
+.stats {
+  gap: 10px;
+  margin: 26px 0 22px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.stats > div {
+  min-width: 0;
+  padding: 16px 15px;
+  border: 1px solid rgba(232, 198, 167, .17);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .015));
+}
+
+.stats dt {
+  font-size: 46px;
+}
+
+.stats dd {
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .stats {
+    gap: 8px;
+  }
+
+  .stats > div {
+    padding: 12px;
+  }
+
+  .stats dt {
+    font-size: 36px;
+  }
+
+  .ref {
+    padding: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ref {
+    transition: none;
+  }
+
+  .ref:hover {
+    transform: none;
+  }
 }
